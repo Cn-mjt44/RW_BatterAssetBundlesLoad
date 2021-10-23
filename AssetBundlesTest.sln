@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.31702.278
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterAssetBundlesLoader", "AssetBundlesTest\BetterAssetBundlesLoader.csproj", "{44B0A691-E03C-4995-9890-7B036B116230}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{0A2B9937-DDA7-4502-B880-4F0EF90026B4}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{44B0A691-E03C-4995-9890-7B036B116230}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{44B0A691-E03C-4995-9890-7B036B116230}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{44B0A691-E03C-4995-9890-7B036B116230}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0A2B9937-DDA7-4502-B880-4F0EF90026B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0A2B9937-DDA7-4502-B880-4F0EF90026B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0A2B9937-DDA7-4502-B880-4F0EF90026B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0A2B9937-DDA7-4502-B880-4F0EF90026B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
