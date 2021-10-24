@@ -21,26 +21,6 @@ namespace BatterAssetBundlesLoad
     {
         static PatchShaderDatabase()
         {
-            #region test
-            /**
-            Exception ex;
-
-            TestClass<int>.add(5);
-            MethodInfo method = typeof(TestClass<int>).GetMethod("add", AccessTools.all);
-            long methodStart = Memory.GetMethodStart(method, out ex);
-            Log.Message("TestClass<int>.add() Memory postion:0x" + methodStart.ToString("x").PadLeft(16, '0'));
-
-            TestClass<float>.add(5);
-            method = typeof(TestClass<float>).GetMethod("add", AccessTools.all);
-            methodStart = Memory.GetMethodStart(method, out ex);
-            Log.Message("TestClass<float>.add() Memory postion:0x" + methodStart.ToString("x").PadLeft(16, '0'));
-
-            TestClass<long>.add(5);
-            method = typeof(TestClass<long>).GetMethod("add", AccessTools.all);
-            methodStart = Memory.GetMethodStart(method, out ex);
-            Log.Message("TestClass<long>.add() Memory postion:0x" + methodStart.ToString("x").PadLeft(16, '0'));
-            **/
-            #endregion
             harmony.PatchAll();
             ModContentPack_allAssetNamesInBundleCached = typeof(ModContentPack).GetField("allAssetNamesInBundleCached", AccessTools.all);
             List<ModContentPack> mods = LoadedModManager.RunningModsListForReading;
@@ -55,17 +35,18 @@ namespace BatterAssetBundlesLoad
             }
             #region test
             /**
-            MethodInfo method = typeof(TestClass<List<int>>).GetMethod("add", AccessTools.all);
-            methodStart = Memory.GetMethodStart(method, out ex);
-            Log.Message("TestClass<int>.add() Memory postion:0x" + methodStart.ToString("x").PadLeft(16, '0'));
-
-            method = typeof(TestClass<List<float>>).GetMethod("add", AccessTools.all);
-            methodStart = Memory.GetMethodStart(method, out ex);
-            Log.Message("TestClass<float>.add() Memory postion:0x" + methodStart.ToString("x").PadLeft(16, '0'));
-
-            method = typeof(TestClass<List<long>>).GetMethod("add", AccessTools.all);
-            methodStart = Memory.GetMethodStart(method, out ex);
-            Log.Message("TestClass<long>.add() Memory postion:0x" + methodStart.ToString("x").PadLeft(16, '0'));
+            test = true;
+            try
+            {
+                ContentFinder<Texture2D>.Get("");
+            }
+            catch { }
+            try
+            {
+                ContentFinder<Texture2D>.GetAllInFolder("").ToList();
+            }
+            catch { }
+            test = false;
             **/
             #endregion
         }
@@ -129,6 +110,8 @@ namespace BatterAssetBundlesLoad
 
         private static FieldInfo ModContentPack_allAssetNamesInBundleCached;
 
+        //public static bool test = false;//test
+
         public static Harmony harmony = new Harmony("BatterAssetBundlesLoad");
     }
 
@@ -144,9 +127,9 @@ namespace BatterAssetBundlesLoad
             StackTrace trace = new StackTrace();
             StackFrame stack = trace.GetFrame(2);
             Type type = stack.GetMethod().DeclaringType;
-            if (type.FullName.Contains("Verse.ContentFinder`1")
-                )
+            if (type.FullName.Contains("Verse.ContentFinder`1"))
             {
+                //if(PatchShaderDatabase.test) Log.Message(type.FullName + " : " + i);//test
                 switch (i)
                 {
                     case 0:
