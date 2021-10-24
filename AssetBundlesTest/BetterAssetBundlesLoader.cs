@@ -26,11 +26,17 @@ namespace BatterAssetBundlesLoad
             List<ModContentPack> mods = LoadedModManager.RunningModsListForReading;
             foreach(ModContentPack pack in mods)
             {
-                List<AssetBundle> loadedAssetBundles = pack.assetBundles.loadedAssetBundles;
-                pack.assetBundles.loadedAssetBundles = new List<AssetBundle>(pack.assetBundles.loadedAssetBundles.Count * 3);
-                pack.assetBundles.loadedAssetBundles.AddRange(loadedAssetBundles);
-                pack.assetBundles.loadedAssetBundles.AddRange(loadedAssetBundles);
-                pack.assetBundles.loadedAssetBundles.AddRange(loadedAssetBundles);
+                if (!pack.assetBundles.loadedAssetBundles.NullOrEmpty())
+                {
+                    List<AssetBundle> cache = pack.assetBundles.loadedAssetBundles;
+                    pack.assetBundles.loadedAssetBundles = new List<AssetBundle>(cache.Count * 3);
+                    for (int i = 0; i < cache.Count; i++)
+                    {
+                        pack.assetBundles.loadedAssetBundles.Add(cache[i]);
+                        pack.assetBundles.loadedAssetBundles.Add(cache[i]);
+                        pack.assetBundles.loadedAssetBundles.Add(cache[i]);
+                    }
+                }
                 ModContentPack_allAssetNamesInBundleCached.SetValue(pack, null);
             }
             #region test
@@ -39,6 +45,11 @@ namespace BatterAssetBundlesLoad
             try
             {
                 ContentFinder<Texture2D>.Get("");
+            }
+            catch { }
+            try
+            {
+                ShaderDatabase.LoadShader("");
             }
             catch { }
             try
@@ -77,22 +88,6 @@ namespace BatterAssetBundlesLoad
                                 __result = result;
                                 return false;
                             }
-                            fullPath = Path.Combine(Path.Combine(Path.Combine(basePath, pack.Name), "Materials/"), shaderPath);
-                            result = (Shader)assetBundle.LoadAsset<Shader>(fullPath + ".shader");
-                            if (result != null)
-                            {
-                                lookup[shaderPath] = result;
-                                __result = result;
-                                return false;
-                            }
-                            fullPath = Path.Combine(Path.Combine(Path.Combine(basePath, pack.PackageId), "Materials/"), shaderPath);
-                            result = (Shader)assetBundle.LoadAsset<Shader>(fullPath + ".shader");
-                            if (result != null)
-                            {
-                                lookup[shaderPath] = result;
-                                __result = result;
-                                return false;
-                            }
                         }
                     }
                 }
@@ -125,9 +120,9 @@ namespace BatterAssetBundlesLoad
         public static void get_FolderNamePostfix(ref string __result, ModContentPack __instance)
         {
             StackTrace trace = new StackTrace();
-            StackFrame stack = trace.GetFrame(2);
-            Type type = stack.GetMethod().DeclaringType;
-            if (type.FullName.Contains("Verse.ContentFinder`1"))
+            Type type = trace.GetFrame(2).GetMethod().DeclaringType;
+            if (type.FullName.StartsWith("Verse.ContentFinder`1") ||
+                type == typeof(PatchShaderDatabase))
             {
                 //if(PatchShaderDatabase.test) Log.Message(type.FullName + " : " + i);//test
                 switch (i)
@@ -149,5 +144,46 @@ namespace BatterAssetBundlesLoad
         private static int i = 0;
     }
 
+
+    [HarmonyPatch(typeof(ModAssetBundlesHandler))]
+    [HarmonyPatch("ReloadAll")]
+    public static class PatchModAssetBundlesHandlerFor_ContentFinder_ReloadAll
+    {
+        [HarmonyPostfix]
+        public static void ReloadAllPostfix(ModAssetBundlesHandler __instance)
+        {
+            if(!__instance.loadedAssetBundles.NullOrEmpty())
+            {
+                List<AssetBundle> cache = __instance.loadedAssetBundles;
+                __instance.loadedAssetBundles = new List<AssetBundle>(cache.Count * 3);
+                for(int i = 0; i < cache.Count;i++)
+                {
+                    __instance.loadedAssetBundles.Add(cache[i]);
+                    __instance.loadedAssetBundles.Add(cache[i]);
+                    __instance.loadedAssetBundles.Add(cache[i]);
+                }
+            }
+        }
+    }
+
+
+    [HarmonyPatch(typeof(ModAssetBundlesHandler))]
+    [HarmonyPatch("<ClearDestroy>b__6_0")]
+    public static class PatchModAssetBundlesHandlerFor_ContentFinder_b__6_0
+    {
+        [HarmonyPrefix]
+        public static void b__6_0Prefix(ModAssetBundlesHandler __instance)
+        {
+            if (!__instance.loadedAssetBundles.NullOrEmpty())
+            {
+                List<AssetBundle> cache = __instance.loadedAssetBundles;
+                __instance.loadedAssetBundles = new List<AssetBundle>(cache.Count / 3);
+                for (int i = 0; i < cache.Count; i+=3)
+                {
+                    __instance.loadedAssetBundles.Add(cache[i]);
+                }
+            }
+        }
+    }
     #endregion
 }
