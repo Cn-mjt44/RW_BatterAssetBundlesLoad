@@ -127,16 +127,16 @@ namespace BatterAssetBundlesLoad
                 //if(PatchShaderDatabase.test) Log.Message(type.FullName + " : " + i);//test
                 switch (i)
                 {
-                    case 0:
-                        ++i;
-                        return;
                     case 1:
-                        ++i;
+                        i = 2;
                         __result = __instance.Name;
                         return;
-                    default:
+                    case 2:
                         i = 0;
                         __result = __instance.PackageId;
+                        return;
+                    default:
+                        i = 1;
                         return;
                 }
             }
